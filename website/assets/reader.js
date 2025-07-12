@@ -469,11 +469,12 @@ function findChapter() {
     let chSearchresult = []
 
     for (let i = 0; i < ChapterList.length; i++) {
-        let title = String(ChapterList[i].title).toLowerCase();
+        let displayTitle = String(ChapterList[i].title)
+        let title = displayTitle.toLowerCase();
         let chSearchindex = title.indexOf(chapter.toLowerCase());
         let index = ChapterList[i].index;
         if (chSearchindex !== -1) {
-            chSearchresult.push(`<div class="chapter_item"><a href="./ch_${index + 1}"><p>${title}</p></a></div>`);
+            chSearchresult.push(`<div class="chapter_item"><a href="./ch_${index + 1}"><p>${displayTitle}</p></a></div>`);
         }
 
     }
@@ -512,6 +513,13 @@ async function releaseWakeLock() {
 
 // Request wake lock when the page loads
 window.addEventListener('load', requestWakeLock);
+
+// Request wake lock when the page is navigated back to
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    requestWakeLock()
+  }
+});
 
 // Release wake lock when the page is unloaded (navigated away from or closed)
 window.addEventListener('beforeunload', releaseWakeLock);
